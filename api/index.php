@@ -2,14 +2,12 @@
 /**
  * Vercel front controller.
  * Single serverless function — routes every request to the correct PHP file.
- * vercel.json rewrites all traffic here; we resolve the original path and
- * require the matching file so __DIR__ inside each page still resolves correctly.
  */
 
 $uri  = $_SERVER['REQUEST_URI'] ?? '/';
 $path = rtrim(parse_url($uri, PHP_URL_PATH), '/') ?: '/';
 
-$base = __DIR__ . '/..';   // project root (one level up from api/)
+$base = realpath(__DIR__ . '/..');   // project root
 
 // ── Dynamic routes (path params) ────────────────────────────────────────────
 $dynamic = [
@@ -23,13 +21,13 @@ foreach ($dynamic as $pattern => [$rel, $param]) {
     if (preg_match($pattern, $path, $m)) {
         $_GET[$param] = $_REQUEST[$param] = $m[1];
         $file = $base . $rel;
-        if (file_exists($file)) { chdir(dirname($file)); require $file; }
+        if (file_exists($file)) { require $file; }
         else                    { http_response_code(404); echo '404'; }
         exit;
     }
 }
 
-// ── Static routes ────────────────────────────────────────────────────────────
+// ── Static routes (clean URLs) ────────────────────────────────────────────────
 $routes = [
     '/'                        => '/index.php',
 
@@ -99,10 +97,17 @@ $routes = [
 $rel = $routes[$path] ?? null;
 if ($rel) {
     $file = $base . $rel;
-    if (file_exists($file)) {
-        chdir(dirname($file));
-        require $file;
-        exit;
+    if (file_exists($file)) { require $file; exit; }
+}
+
+// ── Fallback: serve .php files directly (handles internal redirects) ──────────
+// Blocks sensitive dirs that should never be accessed directly.
+$blocked = ['config', 'partials', 'cron', 'vendor'];
+if (str_ends_with($path, '.php')) {
+    $first = explode('/', ltrim($path, '/'))[0];
+    if (!in_array($first, $blocked)) {
+        $file = $base . $path;
+        if (file_exists($file)) { require $file; exit; }
     }
 }
 

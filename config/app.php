@@ -73,7 +73,7 @@ function current_user(): ?array {
 function require_login(): array {
     $user = current_user();
     if (!$user) {
-        header('Location: /auth/login.php');
+        header('Location: /auth/login');
         exit;
     }
     return $user;
