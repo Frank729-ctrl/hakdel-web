@@ -1,73 +1,8 @@
 {
   "functions": {
-    "**/*.php": { "runtime": "vercel-php@0.9.0" }
+    "api/index.php": { "runtime": "vercel-php@0.9.0" }
   },
   "rewrites": [
-    { "source": "/",                          "destination": "/index.php"                        },
-
-    { "source": "/dashboard",                 "destination": "/dashboard/index.php"              },
-
-    { "source": "/scanner",                   "destination": "/scanner/index.php"                },
-    { "source": "/scanner/history",           "destination": "/scanner/history.php"              },
-    { "source": "/scanner/compare",           "destination": "/scanner/compare.php"              },
-    { "source": "/scanner/schedule",          "destination": "/scanner/schedule.php"             },
-    { "source": "/scanner/report",            "destination": "/scanner/report.php"               },
-    { "source": "/scanner/save",              "destination": "/scanner/save.php"                 },
-    { "source": "/scanner/get",               "destination": "/scanner/get.php"                  },
-
-    { "source": "/labs",                      "destination": "/labs/index.php"                   },
-    { "source": "/labs/submit",               "destination": "/labs/submit.php"                  },
-    { "source": "/labs/:slug",                "destination": "/labs/view.php?slug=:slug"         },
-
-    { "source": "/quiz",                      "destination": "/quiz/index.php"                   },
-    { "source": "/quiz/:slug/play",           "destination": "/quiz/quiz_play.php?slug=:slug"    },
-    { "source": "/quiz/:slug",                "destination": "/quiz/quiz_category.php?slug=:slug"},
-    { "source": "/quiz/answer",               "destination": "/quiz/save_quiz_answer.php"        },
-    { "source": "/quiz/complete",             "destination": "/quiz/complete_session.php"        },
-
-    { "source": "/leaderboard",               "destination": "/leaderboard/index.php"            },
-    { "source": "/profile",                   "destination": "/profile/index.php"                },
-    { "source": "/about",                     "destination": "/about/index.php"                  },
-
-    { "source": "/tools",                     "destination": "/tools/index.php"                  },
-    { "source": "/tools/ip",                  "destination": "/tools/ip_check.php"               },
-    { "source": "/tools/hash",                "destination": "/tools/hash_check.php"             },
-    { "source": "/tools/cve",                 "destination": "/tools/cve_check.php"              },
-    { "source": "/tools/ports",               "destination": "/tools/port_scan.php"              },
-    { "source": "/tools/headers",             "destination": "/tools/headers.php"                },
-    { "source": "/tools/url",                 "destination": "/tools/url_check.php"              },
-    { "source": "/tools/domain",              "destination": "/tools/domain.php"                 },
-    { "source": "/tools/email",               "destination": "/tools/email_check.php"            },
-    { "source": "/tools/ai",                  "destination": "/tools/ai_analysis.php"            },
-    { "source": "/tools/network",             "destination": "/tools/network.php"                },
-    { "source": "/tools/watchlist",           "destination": "/tools/watchlist.php"              },
-
-    { "source": "/incidents",                 "destination": "/incidents/index.php"              },
-    { "source": "/incidents/create",          "destination": "/incidents/create.php"             },
-    { "source": "/incidents/:id",             "destination": "/incidents/view.php?id=:id"        },
-
-    { "source": "/settings",                  "destination": "/settings/index.php"               },
-    { "source": "/settings/2fa",              "destination": "/settings/2fa.php"                 },
-
-    { "source": "/upgrade",                   "destination": "/upgrade/index.php"                },
-    { "source": "/upgrade/callback",          "destination": "/upgrade/callback.php"             },
-    { "source": "/upgrade/webhook",           "destination": "/upgrade/webhook.php"              },
-
-    { "source": "/notifications",             "destination": "/notifications/index.php"          },
-
-    { "source": "/admin",                     "destination": "/admin/index.php"                  },
-    { "source": "/admin/dashboard",           "destination": "/admin/dashboard.php"              },
-
-    { "source": "/auth/login",                "destination": "/auth/login.php"                   },
-    { "source": "/auth/register",             "destination": "/auth/register.php"                },
-    { "source": "/auth/logout",               "destination": "/auth/logout.php"                  },
-    { "source": "/auth/forgot-password",      "destination": "/auth/forgot_password.php"         },
-    { "source": "/auth/reset-password",       "destination": "/auth/reset_password.php"          },
-    { "source": "/auth/verify-email",         "destination": "/auth/verify_email.php"            },
-    { "source": "/auth/2fa",                  "destination": "/auth/2fa_verify.php"              },
-    { "source": "/auth/google_callback.php",  "destination": "/auth/google_callback.php"         },
-
-    { "source": "/legal/terms",               "destination": "/legal/terms.php"                  },
-    { "source": "/legal/privacy",             "destination": "/legal/privacy.php"                }
+    { "source": "/:path*", "destination": "/api/index.php" }
   ]
 }
