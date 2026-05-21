@@ -39,6 +39,7 @@ $error_msg   = get_flash('lab_error');
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HakDel - <?php echo htmlspecialchars($lab['title']); ?></title>
 <link rel="stylesheet" href="/assets/style.css">

@@ -22,7 +22,7 @@ if (is_post()) {
         }
         if ($user_row && !$user_row['email_verified']) {
             // Rate limit: only allow resend if no valid token created in last 5 minutes
-            $recent = db()->prepare('SELECT COUNT(*) FROM email_verifications WHERE user_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE)');
+            $recent = db()->prepare("SELECT COUNT(*) FROM email_verifications WHERE user_id = ? AND created_at > NOW() - INTERVAL '5 minutes'");
             $recent->execute([$uid]);
             if (!$recent->fetchColumn()) {
                 db()->prepare('DELETE FROM email_verifications WHERE user_id = ?')->execute([$uid]);
@@ -116,6 +116,7 @@ if (is_post()) {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sign In — HakDel</title>
 <link rel="stylesheet" href="/assets/style.css">

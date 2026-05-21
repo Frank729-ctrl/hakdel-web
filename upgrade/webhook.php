@@ -38,8 +38,8 @@ switch ($type) {
                 ->execute(['pro', $expires_at, $uid]);
             try {
                 db()->prepare(
-                    'INSERT IGNORE INTO payments (user_id, reference, amount, currency, interval_type, status)
-                     VALUES (?, ?, ?, ?, ?, ?)'
+                    'INSERT INTO payments (user_id, reference, amount, currency, interval_type, status)
+                     VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING'
                 )->execute([$uid, $ref, (int)($data['amount'] ?? 0), $data['currency'] ?? 'GHS', $interval, 'success']);
             } catch (Exception $e) {}
         }

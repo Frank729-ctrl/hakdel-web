@@ -131,8 +131,8 @@ if (is_post()) {
         try {
             $pdo->prepare('INSERT INTO user_settings (user_id, notif_watchlist_email, notif_scan_email, notif_badge_email)
                 VALUES (?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE notif_watchlist_email=VALUES(notif_watchlist_email),
-                    notif_scan_email=VALUES(notif_scan_email), notif_badge_email=VALUES(notif_badge_email)')
+                ON CONFLICT (user_id) DO UPDATE SET notif_watchlist_email=EXCLUDED.notif_watchlist_email,
+                    notif_scan_email=EXCLUDED.notif_scan_email, notif_badge_email=EXCLUDED.notif_badge_email')
                 ->execute([$uid, $wl, $scan, $badge]);
             flash('success', 'Notification preferences saved.');
         } catch (Exception $e) {
@@ -166,6 +166,7 @@ $active_tab = $_GET['tab'] ?? 'account';
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Settings — HakDel</title>
   <link rel="stylesheet" href="/assets/style.css">

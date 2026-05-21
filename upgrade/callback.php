@@ -57,19 +57,18 @@ db()->prepare(
 // Log the payment
 try {
     db()->exec("CREATE TABLE IF NOT EXISTS payments (
-        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        user_id INT UNSIGNED NOT NULL,
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
         reference VARCHAR(100) NOT NULL UNIQUE,
-        amount INT UNSIGNED NOT NULL,
+        amount INTEGER NOT NULL,
         currency VARCHAR(10) NOT NULL DEFAULT 'GHS',
         interval_type VARCHAR(20) NOT NULL DEFAULT 'monthly',
         status VARCHAR(30) NOT NULL DEFAULT 'success',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        INDEX (user_id)
-    )");
+        created_at TIMESTAMP DEFAULT NOW()
+    ); CREATE INDEX IF NOT EXISTS idx_payments_user ON payments (user_id)");
     db()->prepare(
-        'INSERT IGNORE INTO payments (user_id, reference, amount, currency, interval_type, status)
-         VALUES (?, ?, ?, ?, ?, ?)'
+        'INSERT INTO payments (user_id, reference, amount, currency, interval_type, status)
+         VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING'
     )->execute([
         $user['id'],
         $ref,

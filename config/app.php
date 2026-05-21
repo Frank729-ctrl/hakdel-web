@@ -4,7 +4,7 @@
 
 // ── Load .env file if env vars aren't already set (dev / PHP built-in server) ─
 (function () {
-    $env_file = __DIR__ . '/../../.env';
+    $env_file = __DIR__ . '/../.env';
     if (!file_exists($env_file)) return;
     foreach (file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
         $line = trim($line);
@@ -24,7 +24,7 @@
 define('DB_HOST',   getenv('DB_HOST')   ?: 'localhost');
 define('DB_NAME',   getenv('DB_NAME')   ?: 'hakdel');
 define('DB_USER',   getenv('DB_USER')   ?: 'root');
-define('DB_PASS',   getenv('DB_PASS')   ?: 'Shequan123!');           // XAMPP default is empty password
+define('DB_PASS',   getenv('DB_PASS')   ?: '');
 define('DB_PORT',   (int)(getenv('DB_PORT')   ?: 3306));
 
 define('API_BASE',  getenv('API_BASE')  ?: 'http://localhost:8000');   // FastAPI scanner
@@ -40,7 +40,7 @@ function db(): PDO {
     static $pdo = null;
     if ($pdo === null) {
         try {
-            $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
+            $dsn = sprintf('pgsql:host=%s;port=%d;dbname=%s',
                 DB_HOST, DB_PORT, DB_NAME);
             $pdo = new PDO($dsn, DB_USER, DB_PASS, [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -133,11 +133,11 @@ function check_and_award_badges(int $user_id): array {
     $user->execute([$user_id]);
     $u = $user->fetch();
 
-    $scans  = $pdo->prepare('SELECT COUNT(*) FROM scans WHERE user_id = ? AND status = "done"');
+    $scans  = $pdo->prepare("SELECT COUNT(*) FROM scans WHERE user_id = ? AND status = 'done'");
     $scans->execute([$user_id]);
     $scan_count = (int)$scans->fetchColumn();
 
-    $labs  = $pdo->prepare('SELECT COUNT(*) FROM lab_attempts WHERE user_id = ? AND status = "solved"');
+    $labs  = $pdo->prepare("SELECT COUNT(*) FROM lab_attempts WHERE user_id = ? AND status = 'solved'");
     $labs->execute([$user_id]);
     $labs_solved = (int)$labs->fetchColumn();
 
@@ -166,7 +166,7 @@ function check_and_award_badges(int $user_id): array {
             case 'xp_reached':   $earn = ($u['xp'] ?? 0) >= $badge['condition_value']; break;
         }
         if ($earn) {
-            $pdo->prepare('INSERT IGNORE INTO user_badges (user_id, badge_id) VALUES (?, ?)')
+            $pdo->prepare('INSERT INTO user_badges (user_id, badge_id) VALUES (?, ?) ON CONFLICT DO NOTHING')
                 ->execute([$user_id, $badge['id']]);
             $newly_earned[] = $badge;
         }
@@ -216,16 +216,16 @@ function is_post(): bool {
 function create_notification(int $user_id, string $type, string $title, string $message, string $link = ''): void {
     try {
         db()->exec("CREATE TABLE IF NOT EXISTS notifications (
-            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            user_id INT UNSIGNED NOT NULL,
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER NOT NULL,
             type VARCHAR(50) NOT NULL,
             title VARCHAR(255) NOT NULL,
             message TEXT,
             link VARCHAR(512) DEFAULT '',
-            is_read TINYINT(1) DEFAULT 0,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            INDEX (user_id, is_read)
-        )");
+            is_read BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications (user_id, is_read)");
         db()->prepare('INSERT INTO notifications (user_id, type, title, message, link) VALUES (?,?,?,?,?)')
             ->execute([$user_id, $type, $title, $message, $link]);
     } catch (Exception $e) {}
@@ -274,10 +274,10 @@ function _ensure_plan_columns(): void {
     $done = true;
     try {
         db()->exec("ALTER TABLE users
-            ADD COLUMN IF NOT EXISTS plan ENUM('free','pro') NOT NULL DEFAULT 'free',
-            ADD COLUMN IF NOT EXISTS plan_expires_at DATETIME NULL,
-            ADD COLUMN IF NOT EXISTS stripe_customer_id VARCHAR(255) NULL,
-            ADD COLUMN IF NOT EXISTS stripe_subscription_id VARCHAR(255) NULL"
+            ADD COLUMN IF NOT EXISTS plan TEXT NOT NULL DEFAULT 'free',
+            ADD COLUMN IF NOT EXISTS plan_expires_at TIMESTAMP,
+            ADD COLUMN IF NOT EXISTS stripe_customer_id VARCHAR(255),
+            ADD COLUMN IF NOT EXISTS stripe_subscription_id VARCHAR(255)"
         );
     } catch (Exception $e) {}
 }
@@ -303,7 +303,7 @@ define('FREE_SCAN_LIMIT', 3);
 function free_scans_today(int $user_id): int {
     try {
         $s = db()->prepare(
-            "SELECT COUNT(*) FROM scans WHERE user_id = ? AND DATE(created_at) = CURDATE()"
+            "SELECT COUNT(*) FROM scans WHERE user_id = ? AND DATE(created_at) = CURRENT_DATE"
         );
         $s->execute([$user_id]);
         return (int)$s->fetchColumn();

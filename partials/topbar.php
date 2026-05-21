@@ -29,7 +29,7 @@ $_crumb = $_breadcrumb_map[$nav_active ?? ''] ?? htmlspecialchars($topbar_title)
 // Live stats
 $_scan_count = 0; $_findings_open = 0;
 try {
-    $s = db()->prepare('SELECT COUNT(*) FROM scans WHERE user_id = ? AND scanned_at >= NOW() - INTERVAL 24 HOUR');
+    $s = db()->prepare("SELECT COUNT(*) FROM scans WHERE user_id = ? AND scanned_at >= NOW() - INTERVAL '24 hours'");
     $s->execute([$user['id']]);
     $_scan_count = (int)$s->fetchColumn();
 

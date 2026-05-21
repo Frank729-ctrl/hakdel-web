@@ -69,7 +69,7 @@ if (is_post()) {
         }
         try {
             $pdo->prepare('INSERT INTO user_2fa (user_id, secret, backup_codes) VALUES (?, ?, ?)
-                ON DUPLICATE KEY UPDATE secret=VALUES(secret), backup_codes=VALUES(backup_codes), enabled_at=NOW()')
+                ON CONFLICT (user_id) DO UPDATE SET secret=EXCLUDED.secret, backup_codes=EXCLUDED.backup_codes, enabled_at=NOW()')
                 ->execute([$uid, $secret, json_encode($backup_codes)]);
         } catch (Exception $e) {
             flash('error', 'Failed to enable 2FA: ' . $e->getMessage());
@@ -114,6 +114,7 @@ if ($setup_secret && !$has_2fa) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>2FA Setup — HakDel</title>
   <link rel="stylesheet" href="/assets/style.css">

@@ -33,8 +33,8 @@ if (!$slug) {
 $dedup_desc = 'Quiz: ' . $slug . ' T' . $tier . ' (' . $correct . '/' . $total . ')';
 $dedup = db()->prepare('
     SELECT id FROM xp_log
-    WHERE user_id = ? AND source = "quiz_session" AND description = ?
-      AND created_at > DATE_SUB(NOW(), INTERVAL 30 SECOND)
+    WHERE user_id = ? AND source = 'quiz_session' AND description = ?
+      AND created_at > NOW() - INTERVAL '30 seconds'
 ');
 $dedup->execute([$uid, $dedup_desc]);
 if ($dedup->fetch()) {

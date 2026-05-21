@@ -31,6 +31,7 @@ $offset = $C - ($score / 100) * $C;
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <title>HakDel Report — <?php echo htmlspecialchars($target); ?></title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap');

@@ -30,13 +30,13 @@ if (($body['action'] ?? '') === 'check_unlock') {
         {
             db()->prepare('
                 UPDATE quiz_tier_progress
-                SET unlocked = 1, unlocked_at = NOW()
+                SET unlocked = TRUE, unlocked_at = NOW()
                 WHERE user_id = ? AND category_slug = ? AND tier = ?
             ')->execute([$uid, $cat_slug, $t]);
 
             db()->prepare('
-                INSERT IGNORE INTO quiz_tier_progress (user_id, category_slug, tier, questions_done, correct_count, unlocked)
-                VALUES (?, ?, ?, 0, 0, 0)
+                INSERT INTO quiz_tier_progress (user_id, category_slug, tier, questions_done, correct_count, unlocked)
+                VALUES (?, ?, ?, 0, 0, FALSE) ON CONFLICT DO NOTHING
             ')->execute([$uid, $cat_slug, $t + 1]);
 
             $unlocked_tier = $t + 1;
@@ -83,10 +83,10 @@ db()->prepare('
 // Upsert tier progress
 db()->prepare('
     INSERT INTO quiz_tier_progress (user_id, category_slug, tier, questions_done, correct_count, unlocked)
-    VALUES (?, ?, ?, 1, ?, 0)
-    ON DUPLICATE KEY UPDATE
-        questions_done = questions_done + 1,
-        correct_count  = correct_count + ?
+    VALUES (?, ?, ?, 1, ?, FALSE)
+    ON CONFLICT (user_id, category_slug, tier) DO UPDATE SET
+        questions_done = quiz_tier_progress.questions_done + 1,
+        correct_count  = quiz_tier_progress.correct_count + ?
 ')->execute([$uid, $cat_slug, $tier, $is_correct ? 1 : 0, $is_correct ? 1 : 0]);
 
 // Check if this tier now qualifies for unlock
@@ -108,13 +108,13 @@ if ($tp_row && !$tp_row['unlocked']
 {
     db()->prepare('
         UPDATE quiz_tier_progress
-        SET unlocked = 1, unlocked_at = NOW()
+        SET unlocked = TRUE, unlocked_at = NOW()
         WHERE user_id = ? AND category_slug = ? AND tier = ?
     ')->execute([$uid, $cat_slug, $tier]);
 
     db()->prepare('
-        INSERT IGNORE INTO quiz_tier_progress (user_id, category_slug, tier, questions_done, correct_count, unlocked)
-        VALUES (?, ?, ?, 0, 0, 0)
+        INSERT INTO quiz_tier_progress (user_id, category_slug, tier, questions_done, correct_count, unlocked)
+        VALUES (?, ?, ?, 0, 0, FALSE) ON CONFLICT DO NOTHING
     ')->execute([$uid, $cat_slug, $tier + 1]);
 
     $tier_just_unlocked = true;

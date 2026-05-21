@@ -5,6 +5,7 @@ $effective = 'March 23, 2025';
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Privacy Policy — HakDel</title>
   <link rel="stylesheet" href="/assets/style.css">

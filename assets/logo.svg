@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40" role="img" aria-label="HakDel">
+  <!-- Icon mark (24×24, vertically centered) -->
+  <rect x="0" y="8" width="24" height="24" rx="3" fill="#0a0a0c"/>
+  <rect x="0" y="8" width="24" height="24" rx="3" fill="none" stroke="#2c2c36" stroke-width="0.75"/>
+  <!-- H verticals -->
+  <rect x="3.5" y="11" width="4" height="18" rx="0.5" fill="#e8e1cf"/>
+  <rect x="16.5" y="11" width="4" height="18" rx="0.5" fill="#e8e1cf"/>
+  <!-- H crossbar -->
+  <rect x="3.5" y="18.5" width="17" height="4.5" rx="0.5" fill="#5ddbb8"/>
+  <!-- Cursor dot -->
+  <rect x="18" y="26.5" width="2.5" height="2.5" fill="#5ddbb8" opacity="0.85"/>
+
+  <!-- Wordmark: HAK in ivory -->
+  <text
+    x="32" y="26"
+    font-family="'JetBrains Mono', 'Courier New', monospace"
+    font-size="18"
+    font-weight="700"
+    letter-spacing="2"
+    fill="#e8e1cf"
+  >HAK</text>
+
+  <!-- Wordmark: DEL in teal -->
+  <text
+    x="90" y="26"
+    font-family="'JetBrains Mono', 'Courier New', monospace"
+    font-size="18"
+    font-weight="700"
+    letter-spacing="2"
+    fill="#5ddbb8"
+  >DEL</text>
+
+  <!-- Sub-dot -->
+  <circle cx="155" cy="25" r="2.5" fill="#5ddbb8" opacity="0.7"/>
+</svg>

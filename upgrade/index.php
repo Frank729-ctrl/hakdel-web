@@ -34,6 +34,7 @@ if ($already_pro && !empty($user['plan_expires_at'])) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <title>Upgrade to Pro — HakDel</title>
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="stylesheet" href="/assets/layout.css">

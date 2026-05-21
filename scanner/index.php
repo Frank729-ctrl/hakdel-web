@@ -59,6 +59,7 @@ $all_modules = [
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf" content="<?php echo h(csrf_token()); ?>">
 <title>HakDel - Scanner</title>

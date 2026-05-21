@@ -266,7 +266,7 @@ if ($section === 'stats') {
     try {
         $xp_this_week = (int)db()->query('
             SELECT COALESCE(SUM(xp_awarded),0) FROM xp_log
-            WHERE created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)
+            WHERE created_at > NOW() - INTERVAL '7 days'
         ')->fetchColumn();
         $xp_by_source = db()->query('
             SELECT source, SUM(xp_awarded) AS total
@@ -362,6 +362,7 @@ if ($section === 'logs') {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HakDel Admin Panel</title>
 <link rel="stylesheet" href="../assets/style.css">

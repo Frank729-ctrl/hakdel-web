@@ -74,6 +74,7 @@ $sidebar_footer = null;
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HakDel — Quiz</title>
 <link rel="stylesheet" href="/assets/style.css">

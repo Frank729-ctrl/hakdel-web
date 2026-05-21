@@ -32,6 +32,7 @@ try { $s = $pdo->prepare('SELECT COUNT(*) FROM email_checks   WHERE user_id = ?'
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <title>Tools — HakDel</title>
   <link rel="stylesheet" href="/assets/style.css">
   <link rel="stylesheet" href="/assets/layout.css">

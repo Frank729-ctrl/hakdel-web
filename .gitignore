@@ -1,0 +1,27 @@
+# Environment
+.env
+
+# PHP dependencies
+/vendor/
+
+# Composer lock (optional — keep if you want reproducible installs)
+# composer.lock
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+/logs/
+
+# Cache
+/cache/
+*.cache
+
+# Uploaded files (if any)
+/uploads/

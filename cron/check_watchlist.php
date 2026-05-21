@@ -87,8 +87,8 @@ function cron_dns_diff(array $old, array $new): array {
 $pdo   = db();
 $entries = $pdo->query(
     "SELECT * FROM watchlist WHERE is_active = 1
-     AND (ssl_last_checked IS NULL OR ssl_last_checked < DATE_SUB(NOW(), INTERVAL 1 HOUR)
-          OR dns_last_checked IS NULL OR dns_last_checked < DATE_SUB(NOW(), INTERVAL 1 HOUR))"
+     AND (ssl_last_checked IS NULL OR ssl_last_checked < NOW() - INTERVAL '1 hour'
+          OR dns_last_checked IS NULL OR dns_last_checked < NOW() - INTERVAL '1 hour')"
 )->fetchAll();
 
 echo "[" . date('Y-m-d H:i:s') . "] Found " . count($entries) . " domain(s) to check.\n";
@@ -115,7 +115,7 @@ foreach ($entries as $e) {
                     send_watchlist_email($e, "SSL EXPIRED: {$domain}", "The SSL certificate for {$domain} has expired. Renew immediately.");
                 }
             } elseif ($ssl['days'] <= 30) {
-                $exists = $pdo->prepare("SELECT id FROM watchlist_alerts WHERE watchlist_id=? AND alert_type='ssl_expiry' AND is_read=0 AND created_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+                $exists = $pdo->prepare("SELECT id FROM watchlist_alerts WHERE watchlist_id=? AND alert_type='ssl_expiry' AND is_read=0 AND created_at > NOW() - INTERVAL '24 hours'");
                 $exists->execute([$e['id']]);
                 if (!$exists->fetch()) {
                     $pdo->prepare("INSERT INTO watchlist_alerts (watchlist_id,alert_type,message) VALUES (?,?,?)")
