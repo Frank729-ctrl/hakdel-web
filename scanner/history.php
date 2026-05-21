@@ -8,7 +8,7 @@ $initials = $user['avatar_initials'] ?? strtoupper(substr($user['username'], 0, 
 $stmt = db()->prepare('
     SELECT id, job_id, target_url, profile, score, grade, summary, scanned_at
     FROM scans
-    WHERE user_id = ? AND status = "done"
+    WHERE user_id = ? AND status = 'done'
     ORDER BY scanned_at DESC
     LIMIT 50
 ');

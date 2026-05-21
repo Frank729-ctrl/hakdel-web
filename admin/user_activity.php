@@ -33,7 +33,7 @@ $lstmt = db()->prepare('
     SELECT l.title, l.difficulty, la.solved_at, la.attempts_count
     FROM lab_attempts la
     JOIN labs l ON la.lab_id = l.id
-    WHERE la.user_id = ? AND la.status = "solved"
+    WHERE la.user_id = ? AND la.status = 'solved'
     ORDER BY la.solved_at DESC
 ');
 $lstmt->execute([$uid]);
@@ -65,7 +65,7 @@ $xp_from_quiz = (int)$xp_quiz->fetchColumn();
 
 $xp_labs = db()->prepare('
     SELECT COUNT(*) * 0 as placeholder
-    FROM lab_attempts WHERE user_id = ? AND status = "solved"
+    FROM lab_attempts WHERE user_id = ? AND status = 'solved'
 ');
 // Labs don't track XP per attempt in this schema, so show count
 $xp_labs->execute([$uid]);

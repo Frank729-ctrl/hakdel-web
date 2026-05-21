@@ -14,13 +14,13 @@ $pdo = db();
 
 // ── Ensure table ──────────────────────────────────────────────────────────────
 $pdo->exec("CREATE TABLE IF NOT EXISTS domain_lookups (
-    id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id    INT UNSIGNED NOT NULL,
+    id         SERIAL PRIMARY KEY,
+    user_id    INTEGER NOT NULL,
     domain     VARCHAR(255) NOT NULL,
-    result_json MEDIUMTEXT,
-    looked_up_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX (user_id)
-)");
+    result_json TEXT,
+    looked_up_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_domain_lookups_user ON domain_lookups (user_id)");
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function osint_whois(string $domain): array {

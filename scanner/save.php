@@ -54,7 +54,7 @@ if ($existing->fetch()) {
 // Save scan
 $stmt = db()->prepare('
     INSERT INTO scans (user_id, job_id, target_url, profile, modules, status, score, grade, summary, result_json)
-    VALUES (?, ?, ?, ?, ?, "done", ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, 'done', ?, ?, ?, ?)
 ');
 $stmt->execute([
     $user['id'],

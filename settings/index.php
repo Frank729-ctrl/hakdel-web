@@ -15,21 +15,21 @@ $pdo = db();
 // Ensure user_settings table exists
 try {
     $pdo->exec("CREATE TABLE IF NOT EXISTS user_settings (
-        user_id INT UNSIGNED PRIMARY KEY,
-        notif_watchlist_email TINYINT(1) DEFAULT 1,
-        notif_scan_email TINYINT(1) DEFAULT 0,
-        notif_badge_email TINYINT(1) DEFAULT 0,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        user_id INTEGER PRIMARY KEY,
+        notif_watchlist_email BOOLEAN DEFAULT TRUE,
+        notif_scan_email BOOLEAN DEFAULT FALSE,
+        notif_badge_email BOOLEAN DEFAULT FALSE,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 } catch (Exception $e) {}
 
 // Ensure user_2fa table exists
 try {
     $pdo->exec("CREATE TABLE IF NOT EXISTS user_2fa (
-        user_id INT UNSIGNED PRIMARY KEY,
+        user_id INTEGER PRIMARY KEY,
         secret VARCHAR(32) NOT NULL,
-        backup_codes JSON,
-        enabled_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        backup_codes JSONB,
+        enabled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 } catch (Exception $e) {}
 

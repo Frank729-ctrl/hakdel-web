@@ -190,7 +190,7 @@ if (is_post() && verify_csrf($_POST['csrf'] ?? '')) {
     if ($form === 'promote_user') {
         $uid = (int)$_POST['user_id'];
         if ($uid !== $admin['id']) {
-            db()->prepare('UPDATE users SET role="admin" WHERE id = ?')->execute([$uid]);
+            db()->prepare("UPDATE users SET role='admin' WHERE id = ?")->execute([$uid]);
             $unm = db()->prepare('SELECT username FROM users WHERE id=?');
             $unm->execute([$uid]);
             $urow = $unm->fetch();
@@ -220,7 +220,7 @@ if (is_post() && verify_csrf($_POST['csrf'] ?? '')) {
 
 // ── Fetch section data ─────────────────────────────────────────────────────
 if ($section === 'stats') {
-    $stat_students    = (int)db()->query('SELECT COUNT(*) FROM users WHERE role="student"')->fetchColumn();
+    $stat_students    = (int)db()->query("SELECT COUNT(*) FROM users WHERE role='student'")->fetchColumn();
     $stat_labs        = (int)db()->query('SELECT COUNT(*) FROM labs WHERE is_active=1')->fetchColumn();
     $stat_questions   = (int)db()->query('SELECT COUNT(*) FROM quiz_questions WHERE is_active=1')->fetchColumn();
     $stat_scans       = (int)db()->query('SELECT COUNT(*) FROM scans')->fetchColumn();
@@ -247,15 +247,15 @@ if ($section === 'stats') {
     ')->fetchAll();
 
     $recent_activity = db()->query('
-        (SELECT u.username, "scan" AS type, s.target_url AS detail, s.scanned_at AS ts
+        (SELECT u.username, 'scan' AS type, s.target_url AS detail, s.scanned_at AS ts
          FROM scans s JOIN users u ON s.user_id = u.id
-         WHERE s.status = "done")
+         WHERE s.status = 'done')
         UNION ALL
-        (SELECT u.username, "lab" AS type, l.title AS detail, la.solved_at AS ts
+        (SELECT u.username, 'lab' AS type, l.title AS detail, la.solved_at AS ts
          FROM lab_attempts la
          JOIN users u ON la.user_id = u.id
          JOIN labs l  ON la.lab_id  = l.id
-         WHERE la.status = "solved")
+         WHERE la.status = 'solved')
         ORDER BY ts DESC LIMIT 15
     ')->fetchAll();
 
@@ -272,9 +272,9 @@ if ($section === 'stats') {
             SELECT source, SUM(xp_awarded) AS total
             FROM xp_log GROUP BY source ORDER BY total DESC
         ')->fetchAll();
-        $xp_avg_per_user = (int)db()->query('
-            SELECT COALESCE(AVG(xp),0) FROM users WHERE role="student" AND xp > 0
-        ')->fetchColumn();
+        $xp_avg_per_user = (int)db()->query("
+            SELECT COALESCE(AVG(xp),0) FROM users WHERE role='student' AND xp > 0
+        ")->fetchColumn();
     } catch (Exception $e) {}
 }
 
@@ -343,7 +343,7 @@ if ($section === 'users') {
                (SELECT COUNT(*) FROM quiz_attempts qa WHERE qa.user_id = u.id) AS quiz_done
         FROM users u
         LEFT JOIN scans s         ON s.user_id = u.id
-        LEFT JOIN lab_attempts la ON la.user_id = u.id AND la.status = "solved"
+        LEFT JOIN lab_attempts la ON la.user_id = u.id AND la.status = 'solved'
     ';
     if ($search) {
         $ustmt = db()->prepare($base_sql . ' WHERE u.username LIKE ? OR u.email LIKE ? GROUP BY u.id ORDER BY u.created_at DESC');

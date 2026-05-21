@@ -4,12 +4,12 @@ require_once __DIR__ . '/../config/app.php';
 // Ensure admin_logs table exists
 db()->exec('
     CREATE TABLE IF NOT EXISTS admin_logs (
-        id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        admin_id      INT UNSIGNED NOT NULL,
+        id            SERIAL PRIMARY KEY,
+        admin_id      INTEGER NOT NULL,
         admin_username VARCHAR(40) NOT NULL,
         action        VARCHAR(80)  NOT NULL,
         target_type   VARCHAR(40)  DEFAULT NULL,
-        target_id     INT UNSIGNED DEFAULT NULL,
+        target_id     INTEGER DEFAULT NULL,
         detail        TEXT         DEFAULT NULL,
         ip            VARCHAR(45)  DEFAULT NULL,
         created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -21,7 +21,7 @@ function require_admin(): array {
         header('Location: /admin/index.php');
         exit;
     }
-    $stmt = db()->prepare('SELECT * FROM users WHERE id = ? AND role = "admin"');
+    $stmt = db()->prepare("SELECT * FROM users WHERE id = ? AND role = 'admin'");
     $stmt->execute([$_SESSION['admin_id']]);
     $admin = $stmt->fetch();
     if (!$admin) {

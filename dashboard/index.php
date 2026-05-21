@@ -13,11 +13,11 @@ $pdo = db();
 $uid = (int)$user['id'];
 
 // ── Recent scans (last 5) ──────────────────────────────────────────────────
-$stmt = $pdo->prepare('SELECT id, target_url, score, grade, scanned_at FROM scans WHERE user_id = ? AND status = "done" ORDER BY scanned_at DESC LIMIT 5');
+$stmt = $pdo->prepare("SELECT id, target_url, score, grade, scanned_at FROM scans WHERE user_id = ? AND status = 'done' ORDER BY scanned_at DESC LIMIT 5");
 $stmt->execute([$uid]);
 $recent_scans = $stmt->fetchAll();
 
-$stmt = $pdo->prepare('SELECT COUNT(*), COALESCE(AVG(score),0), COALESCE(MAX(score),0) FROM scans WHERE user_id = ? AND status = "done"');
+$stmt = $pdo->prepare("SELECT COUNT(*), COALESCE(AVG(score),0), COALESCE(MAX(score),0) FROM scans WHERE user_id = ? AND status = 'done'");
 $stmt->execute([$uid]);
 [$total_scans, $avg_score, $best_score] = $stmt->fetch(PDO::FETCH_NUM);
 $avg_score  = (int)round($avg_score);
@@ -71,7 +71,7 @@ $stmt->execute([$uid]);
 $xp_log = $stmt->fetchAll();
 
 // ── Labs solved ────────────────────────────────────────────────────────────
-$stmt = $pdo->prepare('SELECT COUNT(*) FROM lab_attempts WHERE user_id = ? AND status = "solved"');
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM lab_attempts WHERE user_id = ? AND status = 'solved'");
 $stmt->execute([$uid]);
 $labs_solved = (int)$stmt->fetchColumn();
 

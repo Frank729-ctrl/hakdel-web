@@ -36,7 +36,7 @@ if ($correct) {
     // Mark solved
     db()->prepare('
         UPDATE lab_attempts
-        SET status = "solved", solved_at = NOW()
+        SET status = 'solved', solved_at = NOW()
         WHERE user_id = ? AND lab_id = ?
     ')->execute([$user['id'], $lab_id]);
 

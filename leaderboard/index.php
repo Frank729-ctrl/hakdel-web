@@ -12,8 +12,8 @@ $top_users = db()->query('
            COUNT(DISTINCT la.id) as labs_solved,
            COUNT(DISTINCT qa.id) as quiz_answered
     FROM users u
-    LEFT JOIN scans s        ON s.user_id = u.id AND s.status = "done"
-    LEFT JOIN lab_attempts la ON la.user_id = u.id AND la.status = "solved"
+    LEFT JOIN scans s        ON s.user_id = u.id AND s.status = 'done'
+    LEFT JOIN lab_attempts la ON la.user_id = u.id AND la.status = 'solved'
     LEFT JOIN quiz_attempts qa ON qa.user_id = u.id
     GROUP BY u.id
     ORDER BY u.xp DESC
@@ -22,7 +22,7 @@ $top_users = db()->query('
 
 // Find current user rank
 $rank_stmt = db()->prepare('
-    SELECT COUNT(*) + 1 as `user_rank`
+    SELECT COUNT(*) + 1 as user_rank
     FROM users
     WHERE xp > (SELECT xp FROM users WHERE id = ?)
 ');
@@ -37,8 +37,8 @@ $platform = db()->query('
         COUNT(DISTINCT la.id)  as total_labs_solved,
         COUNT(DISTINCT qa.id)  as total_quiz_answers
     FROM users u
-    LEFT JOIN scans s         ON s.user_id = u.id AND s.status = "done"
-    LEFT JOIN lab_attempts la ON la.user_id = u.id AND la.status = "solved"
+    LEFT JOIN scans s         ON s.user_id = u.id AND s.status = 'done'
+    LEFT JOIN lab_attempts la ON la.user_id = u.id AND la.status = 'solved'
     LEFT JOIN quiz_attempts qa ON qa.user_id = u.id
 ')->fetch();
 ?>

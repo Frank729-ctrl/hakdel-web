@@ -13,15 +13,15 @@ $gate_feature = 'Headers Analyser'; $gate_hard = true; require __DIR__ . '/../pa
 $pdo = db();
 
 $pdo->exec("CREATE TABLE IF NOT EXISTS header_checks (
-    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id     INT UNSIGNED NOT NULL,
+    id          SERIAL PRIMARY KEY,
+    user_id     INTEGER NOT NULL,
     url         VARCHAR(512) NOT NULL,
-    score       TINYINT UNSIGNED DEFAULT 0,
+    score       SMALLINT DEFAULT 0,
     grade       VARCHAR(3) DEFAULT 'F',
-    result_json MEDIUMTEXT,
-    checked_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX (user_id)
-)");
+    result_json TEXT,
+    checked_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_header_checks_user ON header_checks (user_id)");
 
 // ── Grading rules ─────────────────────────────────────────────────────────────
 function hdr_grade(int $score): string {

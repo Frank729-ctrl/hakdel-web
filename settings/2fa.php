@@ -15,10 +15,10 @@ $pdo = db();
 // Ensure tables exist
 try {
     $pdo->exec("CREATE TABLE IF NOT EXISTS user_2fa (
-        user_id INT UNSIGNED PRIMARY KEY,
+        user_id INTEGER PRIMARY KEY,
         secret VARCHAR(32) NOT NULL,
-        backup_codes JSON,
-        enabled_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        backup_codes JSONB,
+        enabled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 } catch (Exception $e) {}
 

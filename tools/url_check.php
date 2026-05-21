@@ -13,14 +13,14 @@ $gate_feature = 'URL / Phishing Checker'; $gate_hard = true; require __DIR__ . '
 $pdo = db();
 
 $pdo->exec("CREATE TABLE IF NOT EXISTS url_checks (
-    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id     INT UNSIGNED NOT NULL,
+    id          SERIAL PRIMARY KEY,
+    user_id     INTEGER NOT NULL,
     url         VARCHAR(2048) NOT NULL,
     verdict     VARCHAR(20) DEFAULT 'unknown',
-    result_json MEDIUMTEXT,
-    checked_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX (user_id)
-)");
+    result_json TEXT,
+    checked_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_url_checks_user ON url_checks (user_id)");
 
 // ── POST ──────────────────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

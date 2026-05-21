@@ -16,14 +16,14 @@ $pdo = db();
 // Ensure table exists
 try {
     $pdo->exec("CREATE TABLE IF NOT EXISTS port_scans (
-        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        user_id INT UNSIGNED NOT NULL,
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
         target VARCHAR(255) NOT NULL,
         mode VARCHAR(20) DEFAULT 'common',
-        open_ports JSON,
-        scanned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        INDEX (user_id)
-    )");
+        open_ports JSONB,
+        scanned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE INDEX IF NOT EXISTS idx_port_scans_user ON port_scans (user_id)");
 } catch (Exception $e) {}
 
 $service_names = [

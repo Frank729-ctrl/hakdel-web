@@ -13,7 +13,7 @@ if (is_post()) {
         $login    = trim($_POST['login']    ?? '');
         $password = $_POST['password']      ?? '';
 
-        $stmt = db()->prepare('SELECT * FROM users WHERE (username = ? OR email = ?) AND role = "admin"');
+        $stmt = db()->prepare("SELECT * FROM users WHERE (username = ? OR email = ?) AND role = 'admin'");
         $stmt->execute([$login, $login]);
         $admin = $stmt->fetch();
 

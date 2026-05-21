@@ -10,14 +10,14 @@ $stmt = db()->prepare('
     SELECT COUNT(*) as total,
            COALESCE(AVG(score), 0) as avg_score,
            COALESCE(MAX(score), 0) as best_score
-    FROM scans WHERE user_id = ? AND status = "done"
+    FROM scans WHERE user_id = ? AND status = 'done'
 ');
 $stmt->execute([$user['id']]);
 $scan_stats = $stmt->fetch();
 
 $stmt = db()->prepare('
     SELECT target_url, score, grade, profile, scanned_at
-    FROM scans WHERE user_id = ? AND status = "done"
+    FROM scans WHERE user_id = ? AND status = 'done'
     ORDER BY scanned_at DESC LIMIT 5
 ');
 $stmt->execute([$user['id']]);

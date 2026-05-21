@@ -13,14 +13,14 @@ $gate_feature = 'Email Investigator'; $gate_hard = true; require __DIR__ . '/../
 $pdo = db();
 
 $pdo->exec("CREATE TABLE IF NOT EXISTS email_checks (
-    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id     INT UNSIGNED NOT NULL,
+    id          SERIAL PRIMARY KEY,
+    user_id     INTEGER NOT NULL,
     email       VARCHAR(320) NOT NULL,
     domain      VARCHAR(255) NOT NULL,
-    result_json MEDIUMTEXT,
-    checked_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX (user_id)
-)");
+    result_json TEXT,
+    checked_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_email_checks_user ON email_checks (user_id)");
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

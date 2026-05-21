@@ -15,16 +15,16 @@ $pdo = db();
 // Ensure tables exist
 try {
     $pdo->exec("CREATE TABLE IF NOT EXISTS incidents (
-        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        user_id INT UNSIGNED NOT NULL,
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL,
         title VARCHAR(255) NOT NULL,
-        severity ENUM('critical','high','medium','low','info') DEFAULT 'medium',
-        status ENUM('open','investigating','contained','resolved','closed') DEFAULT 'open',
+        severity VARCHAR(10) DEFAULT 'medium' CHECK (severity IN ('critical','high','medium','low','info')),
+        status VARCHAR(15) DEFAULT 'open' CHECK (status IN ('open','investigating','contained','resolved','closed')),
         description TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        INDEX (user_id, status)
-    )");
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE INDEX IF NOT EXISTS idx_incidents_user_status ON incidents (user_id, status)");
 } catch (Exception $e) {}
 
 $error = '';

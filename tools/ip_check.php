@@ -14,15 +14,14 @@ $gate_feature = 'IP Checker'; $gate_hard = true; require __DIR__ . '/../partials
 // ── Ensure table exists ───────────────────────────────────────────────────────
 try {
     db()->exec("CREATE TABLE IF NOT EXISTS ip_checks (
-        id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        user_id     INT UNSIGNED NOT NULL,
+        id          SERIAL PRIMARY KEY,
+        user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         ip_address  VARCHAR(45) NOT NULL,
-        result      JSON,
-        risk_score  TINYINT UNSIGNED,
-        checked_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-        INDEX idx_ip_user (user_id, checked_at)
-    )");
+        result      JSONB,
+        risk_score  SMALLINT,
+        checked_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE INDEX IF NOT EXISTS idx_ip_checks_user ON ip_checks (user_id, checked_at)");
 } catch (Exception $e) {}
 
 // ── Country flag helper ───────────────────────────────────────────────────────

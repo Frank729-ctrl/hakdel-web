@@ -22,7 +22,7 @@ $scan_a = $id_a ? fetchScan(db(), $id_a, $user['id']) : null;
 $scan_b = $id_b ? fetchScan(db(), $id_b, $user['id']) : null;
 
 // For the selector: load last 20 scans
-$stmt = db()->prepare('SELECT id, target_url, score, grade, scanned_at FROM scans WHERE user_id = ? AND status="done" ORDER BY scanned_at DESC LIMIT 20');
+$stmt = db()->prepare("SELECT id, target_url, score, grade, scanned_at FROM scans WHERE user_id = ? AND status='done' ORDER BY scanned_at DESC LIMIT 20");
 $stmt->execute([$user['id']]);
 $all_scans = $stmt->fetchAll();
 ?>
