@@ -197,7 +197,7 @@ $sidebar_footer = null;
           <?php endif; ?>
 
           <div style="margin-top:10px">
-            <a href="/quiz/quiz_play.php?slug=<?php echo urlencode($slug); ?>&tier=<?php echo $tier; ?>"
+            <a href="/quiz/<?php echo urlencode($slug); ?>/play?tier=<?php echo $tier; ?>"
                class="btn-primary" style="font-size:13px;padding:8px 18px;text-decoration:none;display:inline-block">
               <?php echo $q_done > 0 ? 'Continue Tier ' . $tier : 'Start Tier ' . $tier; ?> &rsaquo;
             </a>

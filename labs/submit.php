@@ -8,7 +8,7 @@ if (!verify_csrf($_POST['csrf'] ?? '')) redirect('/labs/');
 $lab_id   = (int)($_POST['lab_id']   ?? 0);
 $lab_slug = trim($_POST['lab_slug']  ?? '');
 $flag     = trim($_POST['flag']      ?? '');
-$back     = '/labs/view.php?slug=' . urlencode($lab_slug);
+$back     = '/labs/' . urlencode($lab_slug);
 
 if (!$lab_id || !$flag) redirect($back);
 

@@ -91,7 +91,7 @@ require __DIR__ . '/../partials/sidebar.php';
         ][$lab['category']] ?? '&#9670;';
       ?>
       <div class="lab-card <?php echo $locked ? 'lab-locked' : ''; ?> <?php echo $status === 'solved' ? 'lab-solved' : ''; ?>"
-           <?php if (!$locked): ?>onclick="window.location='lab.php?slug=<?php echo urlencode($lab['slug']); ?>'"<?php endif; ?>>
+           <?php if (!$locked): ?>onclick="window.location='/labs/<?php echo urlencode($lab['slug']); ?>'"<?php endif; ?>>
 
         <div class="lab-card-top">
           <span class="lab-cat-icon"><?php echo $cat_icon; ?></span>

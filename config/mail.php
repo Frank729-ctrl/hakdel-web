@@ -9,7 +9,7 @@
  *   $ok = send_mail('to@example.com', 'Subject', 'Plain-text body', '<p>HTML body</p>');
  */
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;

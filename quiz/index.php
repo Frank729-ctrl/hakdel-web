@@ -131,7 +131,7 @@ $sidebar_footer = null;
       <div class="qlobby-card<?php echo $locked ? ' qlobby-locked' : ''; ?>"
            style="--cat-color:<?php echo $color; ?>"
            <?php if (!$locked && (int)$cat['question_count'] > 0): ?>
-           onclick="window.location='/quiz/quiz_category.php?slug=<?php echo urlencode($slug); ?>'"
+           onclick="window.location='/quiz/<?php echo urlencode($slug); ?>'"
            <?php endif; ?>>
 
         <?php if ($locked): ?>

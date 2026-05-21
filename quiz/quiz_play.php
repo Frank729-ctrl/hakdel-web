@@ -40,7 +40,7 @@ if ($req_tier > 1) {
     $unlock_stmt->execute([$user['id'], $slug, $req_tier - 1]);
     $prev = $unlock_stmt->fetch();
     if (!$prev || !$prev['unlocked']) {
-        header('Location: /quiz/quiz_category.php?slug=' . urlencode($slug));
+        header('Location: /quiz/' . urlencode($slug));
         exit;
     }
 }
@@ -67,7 +67,7 @@ $q_stmt->execute([$slug, $max_tier]);
 $questions_raw = $q_stmt->fetchAll();
 
 if (empty($questions_raw)) {
-    header('Location: /quiz/quiz_category.php?slug=' . urlencode($slug));
+    header('Location: /quiz/' . urlencode($slug));
     exit;
 }
 
@@ -114,7 +114,7 @@ $sidebar_footer = null;
 
     <!-- Back link -->
     <div style="margin-bottom:8px">
-      <a href="/quiz/quiz_category.php?slug=<?php echo urlencode($slug); ?>" class="hk-back-link" id="back-link">&#8592; <?php echo h($cat['name']); ?></a>
+      <a href="/quiz/<?php echo urlencode($slug); ?>" class="hk-back-link" id="back-link">&#8592; <?php echo h($cat['name']); ?></a>
     </div>
 
     <!-- Quiz active view -->
@@ -178,7 +178,7 @@ $sidebar_footer = null;
         </div>
         <div class="qr-actions">
           <button class="btn-scan" onclick="continueQuiz()">Continue +10</button>
-          <a href="/quiz/quiz_category.php?slug=<?php echo urlencode($slug); ?>"
+          <a href="/quiz/<?php echo urlencode($slug); ?>"
              class="btn-secondary" style="text-align:center;display:block;text-decoration:none;padding:9px 18px">Back to Category</a>
         </div>
       </div>

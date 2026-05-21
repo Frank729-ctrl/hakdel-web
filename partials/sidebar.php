@@ -1,88 +1,126 @@
 <?php
-// Required variables (set by the including page before requiring this file):
-//   $nav_active (string) — active key for current page
+// Required: $nav_active (string), $user (array), $level (int), $xp_data (array)
 
-$sidebar_footer ??= null;
-
-// Fetch unread notification count
 $notif_count = 0;
 try {
     $s = db()->prepare('SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0');
     $s->execute([$user['id']]);
     $notif_count = (int)$s->fetchColumn();
 } catch(Exception $e) {}
-$notif_badge_html = $notif_count > 0 ? ' <span class="nav-badge">' . $notif_count . '</span>' : '';
 
-function _nav_item(string $href, string $icon, string $label, string $active_key, string $nav_active, string $extra = ''): string {
-    $active = $nav_active === $active_key ? ' active' : '';
-    return '<a href="' . $href . '" class="hk-nav-item' . $active . '" title="' . htmlspecialchars($label) . '">'
-         . '<span class="nav-icon">' . $icon . '</span>'
-         . '<span class="nav-label">' . $label . $extra . '</span>'
-         . '</a>';
+// Trial check
+$_sidebar_trial = false; $_sidebar_trial_days = 0;
+if (is_pro($user) && !empty($user['plan_expires_at'])) {
+    try {
+        $s = db()->prepare('SELECT COUNT(*) FROM payments WHERE user_id = ? AND status = ?');
+        $s->execute([$user['id'], 'success']);
+        if (!(int)$s->fetchColumn()) {
+            $_sidebar_trial = true;
+            $_sidebar_trial_days = max(0, (int)ceil((strtotime($user['plan_expires_at']) - time()) / 86400));
+        }
+    } catch (Exception $e) {}
 }
+
+$nav = [
+    'OPERATIONS' => [
+        ['href'=>'/dashboard/',           'id'=>'dashboard',     'icon'=>'▣', 'label'=>'Briefing'],
+        ['href'=>'/scanner/',             'id'=>'scanner',       'icon'=>'◈', 'label'=>'Surveillance'],
+        ['href'=>'/tools/watchlist.php',  'id'=>'watchlist',     'icon'=>'◉', 'label'=>'Watchlist'],
+    ],
+    'TRAINING' => [
+        ['href'=>'/labs/',        'id'=>'labs',        'icon'=>'⌬', 'label'=>'Field Range'],
+        ['href'=>'/quiz/',        'id'=>'quiz',        'icon'=>'⌖', 'label'=>'Drills'],
+        ['href'=>'/leaderboard/', 'id'=>'leaderboard', 'icon'=>'♛', 'label'=>'Ranks'],
+    ],
+    'AUXILIARY' => [
+        ['href'=>'/tools/',        'id'=>'tools',    'icon'=>'⌗', 'label'=>'Toolkit'],
+        ['href'=>'/profile/',      'id'=>'profile',  'icon'=>'⌥', 'label'=>'Dossier'],
+        ['href'=>'/settings/',     'id'=>'settings', 'icon'=>'⚙', 'label'=>'Config'],
+    ],
+];
 ?>
 <aside class="hk-sidebar">
   <div class="hk-sidebar-brand">
-    <div class="brand-icon">&#9650;</div>
-    <div>
-      <div class="brand-title">HAK<span style="color:var(--accent2)">DEL</span></div>
-      <div class="brand-sub">Command Center</div>
-    </div>
+    <div class="brand-mark">HAK<span class="accent">DEL</span><span class="dot"></span></div>
+    <div class="brand-meta">v2.7.0 · BRIEFING</div>
   </div>
 
   <nav class="hk-nav">
-    <?php echo _nav_item('/dashboard/', '&#9635;', 'Dashboard', 'dashboard', $nav_active); ?>
+    <?php foreach ($nav as $group => $links): ?>
+    <div class="nav-grp">
+      <div class="nav-grp-h"><?= $group ?></div>
+      <?php foreach ($links as $link):
+        $active = ($nav_active === $link['id']) || ($nav_active === 'history' && $link['id'] === 'scanner') || ($nav_active === 'schedule' && $link['id'] === 'scanner');
+        $badge = ($link['id'] === 'watchlist' && $notif_count > 0) ? $notif_count : null;
+      ?>
+      <a href="<?= $link['href'] ?>" class="nav-item<?= $active ? ' active' : '' ?>">
+        <span class="ic"><?= $link['icon'] ?></span>
+        <span><?= $link['label'] ?></span>
+        <?php if ($badge): ?>
+          <span class="badge"><?= $badge ?></span>
+        <?php else: ?>
+          <span></span>
+        <?php endif; ?>
+      </a>
+      <?php endforeach; ?>
+    </div>
+    <?php endforeach; ?>
 
-    <div class="hk-nav-section">Scanner</div>
-    <?php echo _nav_item('/scanner/',             '&#9632;', 'Scanner',   'scanner',  $nav_active); ?>
-    <?php echo _nav_item('/scanner/history.php',  '&#9783;', 'History',   'history',  $nav_active); ?>
-    <?php echo _nav_item('/scanner/schedule.php', '&#9200;', 'Schedules', 'schedule', $nav_active); ?>
-
-    <div class="hk-nav-section">Workspace</div>
-    <?php echo _nav_item('/incidents/',     '&#128203;', 'Incidents',     'incidents',     $nav_active); ?>
-    <?php echo _nav_item('/notifications/', '&#128276;', 'Notifications', 'notifications', $nav_active, $notif_badge_html); ?>
-    <?php echo _nav_item('/settings/',      '&#9881;',   'Settings',      'settings',      $nav_active); ?>
-
-    <?php
-    // Check trial state
-    $_sidebar_trial = false;
-    $_sidebar_trial_days = 0;
-    if (is_pro($user) && !empty($user['plan_expires_at'])) {
-        try {
-            $s = db()->prepare('SELECT COUNT(*) FROM payments WHERE user_id = ? AND status = ?');
-            $s->execute([$user['id'], 'success']);
-            if (!(int)$s->fetchColumn()) {
-                $_sidebar_trial = true;
-                $_sidebar_trial_days = max(0, (int)ceil((strtotime($user['plan_expires_at']) - time()) / 86400));
-            }
-        } catch (Exception $e) {}
-    }
-    ?>
     <?php if ($_sidebar_trial): ?>
-    <div style="padding: 10px 10px 4px;">
-      <a href="/upgrade/" class="hk-nav-upgrade" style="border-color:rgba(255,170,0,0.3);background:rgba(255,170,0,0.06);color:#ffaa00;">
-        <span style="font-size:12px">&#9651;</span>
-        <span>Trial: <?= $_sidebar_trial_days ?>d left</span>
+    <div style="padding:8px 14px">
+      <a href="/upgrade/" class="hk-nav-upgrade" style="border-color:var(--amber-dim);background:rgba(244,163,34,.08);color:var(--amber)">
+        ⚡ TRIAL: <?= $_sidebar_trial_days ?>D LEFT
       </a>
     </div>
     <?php elseif (!is_pro($user)): ?>
-    <div style="padding: 10px 10px 4px;">
-      <a href="/upgrade/" class="hk-nav-upgrade">
-        <span style="font-size:13px">&#9651;</span>
-        <span>Upgrade to Pro</span>
-      </a>
+    <div style="padding:8px 14px">
+      <a href="/upgrade/" class="hk-nav-upgrade">⚡ UPGRADE TO PRO</a>
     </div>
     <?php endif; ?>
   </nav>
 
   <div class="hk-sidebar-user">
-    <a href="/profile/" class="hk-user-info <?php echo $nav_active === 'profile' ? 'active' : ''; ?>">
-      <div class="hk-user-avatar"><?php echo htmlspecialchars($initials); ?></div>
-      <div class="hk-user-meta">
-        <div class="hk-user-name"><?php echo htmlspecialchars($user['username']); ?></div>
-        <div class="hk-user-role">LVL <?php echo $level; ?> &middot; <?php echo $user['xp']; ?> XP</div>
+    <div class="id-card">
+      <div class="row">
+        <span class="l">OPERATOR</span>
+        <span class="v"><?= htmlspecialchars($user['username']) ?></span>
       </div>
+      <div class="row">
+        <span class="l">CLEARANCE</span>
+        <span class="v signal">LVL <?= $level ?></span>
+      </div>
+      <div class="row">
+        <span class="l">XP</span>
+        <span class="v"><?= number_format((int)$user['xp']) ?> / <?= number_format($xp_data['next_level_xp'] ?? 0) ?></span>
+      </div>
+      <div class="row">
+        <span class="l">UTC</span>
+        <span class="v tnum" id="sidebar-utc">--:--:--</span>
+      </div>
+    </div>
+    <a href="/auth/logout.php" class="sidebar-logout">
+      <span>SIGN OUT</span>
+      <span>→</span>
     </a>
-    <a href="/auth/logout.php" class="hk-user-logout" title="Logout">&#8594;</a>
   </div>
 </aside>
+<script>
+(function(){
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function tick(){
+    var d = new Date();
+    var el = document.getElementById('sidebar-utc');
+    if(el) el.textContent = pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds());
+  }
+  tick(); setInterval(tick, 1000);
+  // Mobile sidebar toggle
+  var tog = document.getElementById('hk-menu-toggle');
+  var sb  = document.querySelector('.hk-sidebar');
+  if(tog && sb){
+    tog.addEventListener('click', function(){
+      sb.classList.toggle('hk-sidebar--open');
+      tog.classList.toggle('active');
+    });
+  }
+})();
+</script>
