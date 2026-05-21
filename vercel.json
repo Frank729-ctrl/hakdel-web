@@ -1,0 +1,26 @@
+{
+  "functions": {
+    "**/*.php": { "runtime": "@vercel/php@0.6.0" }
+  },
+  "rewrites": [
+    { "source": "/",                 "destination": "/index.php"               },
+    { "source": "/scanner",          "destination": "/scanner/index.php"       },
+    { "source": "/scanner/history",  "destination": "/scanner/history.php"     },
+    { "source": "/scanner/save",     "destination": "/scanner/save.php"        },
+    { "source": "/scanner/get",      "destination": "/scanner/get.php"         },
+    { "source": "/labs",             "destination": "/labs/index.php"          },
+    { "source": "/labs/view",        "destination": "/labs/view.php"           },
+    { "source": "/labs/submit",      "destination": "/labs/submit.php"         },
+    { "source": "/quiz",             "destination": "/quiz/index.php"          },
+    { "source": "/quiz/answer",      "destination": "/quiz/save_answer.php"    },
+    { "source": "/quiz/xp",          "destination": "/quiz/award_xp.php"       },
+    { "source": "/leaderboard",      "destination": "/leaderboard/index.php"   },
+    { "source": "/profile",          "destination": "/profile/index.php"       },
+    { "source": "/about",            "destination": "/about/index.php"         },
+    { "source": "/auth/login",       "destination": "/auth/login.php"          },
+    { "source": "/auth/register",    "destination": "/auth/register.php"       },
+    { "source": "/auth/logout",      "destination": "/auth/logout.php"         },
+    { "source": "/admin",            "destination": "/admin/index.php"         },
+    { "source": "/admin/dashboard",  "destination": "/admin/dashboard.php"     }
+  ]
+}

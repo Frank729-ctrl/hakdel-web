@@ -1,0 +1,68 @@
+/* tools.css — OSINT tool components */
+
+/* ── OSINT result header ──────────────────────────────────────────────────── */
+.osint-result-header {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.osint-domain-name {
+  font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--text);
+}
+.osint-domain-ip {
+  font-family: var(--mono); font-size: 13px; color: var(--accent);
+  background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.15);
+  padding: 3px 10px; border-radius: 20px;
+}
+
+/* ── DNS row ──────────────────────────────────────────────────────────────── */
+.osint-dns-list { display: flex; flex-direction: column; gap: 6px; padding-top: 4px; }
+.osint-dns-row  { display: flex; align-items: baseline; gap: 10px; }
+.osint-dns-type {
+  font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  padding: 2px 7px; border-radius: 4px; flex-shrink: 0; min-width: 44px; text-align: center;
+}
+.osint-dns-val  { font-family: var(--mono); font-size: 12px; color: var(--text2); word-break: break-all; }
+
+/* ── WHOIS rows ───────────────────────────────────────────────────────────── */
+.osint-whois-list { display: flex; flex-direction: column; gap: 0; padding-top: 4px; }
+.osint-whois-row  {
+  display: flex; gap: 12px; padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px;
+}
+.osint-whois-row:last-child { border-bottom: none; }
+.osint-whois-key  { font-family: var(--mono); font-size: 11px; color: var(--text3); min-width: 140px; flex-shrink: 0; padding-top: 1px; }
+.osint-whois-val  { color: var(--text2); word-break: break-word; }
+
+/* ── Subdomain pill ───────────────────────────────────────────────────────── */
+.osint-sub-pill {
+  font-family: var(--mono); font-size: 11px; color: var(--text2);
+  background: var(--bg3); border: 1px solid var(--border);
+  padding: 3px 9px; border-radius: 4px;
+  transition: border-color 0.1s, color 0.1s;
+}
+.osint-sub-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Email check rows ─────────────────────────────────────────────────────── */
+.email-check-row   { display: flex; align-items: baseline; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.email-check-row:last-child { border-bottom: none; }
+.email-check-icon  { font-size: 14px; flex-shrink: 0; width: 16px; text-align: center; }
+.email-check-label { font-size: 13px; font-weight: 600; color: var(--text); min-width: 110px; flex-shrink: 0; }
+.email-check-note  { font-size: 12px; color: var(--text3); }
+
+/* ── tool-input (shared across tool pages) ───────────────────────────────── */
+.tool-label {
+  display: block; font-family: var(--mono); font-size: 11px; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+}
+.tool-input {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 10px 14px;
+  font-family: var(--mono); font-size: 14px; color: var(--text);
+  outline: none; transition: border-color 0.15s; box-sizing: border-box;
+}
+.tool-input:focus { border-color: var(--accent); }
+.tool-input::placeholder { color: var(--text3); }
