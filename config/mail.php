@@ -9,8 +9,6 @@
  *   $ok = send_mail('to@example.com', 'Subject', 'Plain-text body', '<p>HTML body</p>');
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -35,6 +33,12 @@ define('MAIL_FROM_NAME', getenv('MAIL_FROM_NAME') ?: 'HakDel');
  */
 function send_mail(string $to, string $subject, string $body_text, string $body_html = ''): bool
 {
+    $autoload = __DIR__ . '/../vendor/autoload.php';
+    if (!file_exists($autoload)) {
+        error_log('HakDel mailer: vendor/autoload.php not found — run composer install');
+        return false;
+    }
+    require_once $autoload;
     $mail = new PHPMailer(true);
 
     try {
