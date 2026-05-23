@@ -38,8 +38,15 @@ model User {
   watchlist     Watchlist[]
 }
 
-enum Role { USER ADMIN }
-enum Plan { FREE PRO }
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Plan {
+  FREE
+  PRO
+}
 
 model Account {
   id                String  @id @default(cuid())
@@ -91,7 +98,12 @@ model Scan {
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-enum ScanStatus { PENDING RUNNING DONE ERROR }
+enum ScanStatus {
+  PENDING
+  RUNNING
+  DONE
+  ERROR
+}
 
 model Badge {
   id             String      @id @default(cuid())
@@ -138,7 +150,12 @@ model Lab {
   attempts    LabAttempt[]
 }
 
-enum Difficulty { EASY MEDIUM HARD EXPERT }
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  EXPERT
+}
 
 model LabAttempt {
   id        String    @id @default(cuid())
