@@ -44,7 +44,7 @@ export function ToolShell({ title, description, placeholder, inputLabel, inputTy
           </div>
         </form>
         {error && <div className="p-4 rounded-lg bg-danger/10 border border-danger/20 text-danger text-sm">{error}</div>}
-        {result && !loading && renderResult(result)}
+        {result != null && !loading && renderResult(result)}
       </div>
     </div>
   )
