@@ -4,16 +4,11 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Bell, Flame } from 'lucide-react'
 
-interface HeaderProps {
-  title: string
-  description?: string
-  action?: React.ReactNode
-}
+interface HeaderProps { title: string; description?: string; action?: React.ReactNode }
 
 export function Header({ title, description, action }: HeaderProps) {
   const { data: session } = useSession()
   const streak = session?.user?.streakDays ?? 0
-
   return (
     <header className="flex items-center justify-between mb-6">
       <div>

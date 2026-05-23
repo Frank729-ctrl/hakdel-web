@@ -14,14 +14,9 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       profile(profile) {
-        return {
-          id: profile.sub,
-          name: profile.name,
+        return { id: profile.sub, name: profile.name,
           username: profile.email.split('@')[0].replace(/[^a-z0-9_]/gi, ''),
-          email: profile.email,
-          image: profile.picture,
-          emailVerified: new Date(),
-        }
+          email: profile.email, image: profile.picture, emailVerified: new Date() }
       },
     }),
     CredentialsProvider({
@@ -33,12 +28,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.login || !credentials?.password) return null
         const user = await prisma.user.findFirst({
-          where: {
-            OR: [
-              { email: credentials.login.toLowerCase() },
-              { username: credentials.login },
-            ],
-          },
+          where: { OR: [{ email: credentials.login.toLowerCase() }, { username: credentials.login }] },
         })
         if (!user || !user.password) return null
         if (!user.emailVerified) throw new Error('EMAIL_NOT_VERIFIED')

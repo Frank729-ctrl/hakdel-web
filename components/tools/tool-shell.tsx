@@ -5,20 +5,13 @@ import { Header } from '@/components/layout/header'
 import { Loader, Search } from 'lucide-react'
 
 interface ToolShellProps {
-  title: string
-  description: string
-  placeholder: string
-  inputLabel: string
-  inputType?: string
-  buttonLabel?: string
+  title: string; description: string; placeholder: string; inputLabel: string;
+  inputType?: string; buttonLabel?: string;
   onSubmit: (value: string) => Promise<unknown>
   renderResult: (data: unknown) => React.ReactNode
 }
 
-export function ToolShell({
-  title, description, placeholder, inputLabel, inputType = 'text',
-  buttonLabel = 'Analyze', onSubmit, renderResult,
-}: ToolShellProps) {
+export function ToolShell({ title, description, placeholder, inputLabel, inputType = 'text', buttonLabel = 'Analyze', onSubmit, renderResult }: ToolShellProps) {
   const [value, setValue] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<unknown>(null)
@@ -28,13 +21,9 @@ export function ToolShell({
     e.preventDefault()
     if (!value.trim()) return
     setLoading(true); setError(''); setResult(null)
-    try {
-      setResult(await onSubmit(value.trim()))
-    } catch (err: any) {
-      setError(err.message ?? 'Request failed')
-    } finally {
-      setLoading(false)
-    }
+    try { setResult(await onSubmit(value.trim())) }
+    catch (err: any) { setError(err.message ?? 'Request failed') }
+    finally { setLoading(false) }
   }
 
   return (
@@ -45,7 +34,7 @@ export function ToolShell({
           <div className="flex-1">
             <label className="label">{inputLabel}</label>
             <input className="input font-mono" type={inputType} placeholder={placeholder}
-              value={value} onChange={(e) => setValue(e.target.value)} required disabled={loading} />
+              value={value} onChange={e => setValue(e.target.value)} required disabled={loading} />
           </div>
           <div className="flex items-end">
             <button type="submit" className="btn-primary" disabled={loading}>
@@ -54,10 +43,7 @@ export function ToolShell({
             </button>
           </div>
         </form>
-
-        {error && (
-          <div className="p-4 rounded-lg bg-danger/10 border border-danger/20 text-danger text-sm">{error}</div>
-        )}
+        {error && <div className="p-4 rounded-lg bg-danger/10 border border-danger/20 text-danger text-sm">{error}</div>}
         {result && !loading && renderResult(result)}
       </div>
     </div>
