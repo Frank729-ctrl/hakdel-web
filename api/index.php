@@ -27,9 +27,15 @@ foreach ($dynamic as $pattern => [$rel, $param]) {
     }
 }
 
+// ── Root redirect (inline to avoid Vercel serving /index.php as static file) ──
+if ($path === '/') {
+    require_once $base . '/config/app.php';
+    if (current_user()) redirect('/dashboard/');
+    else redirect('/auth/login');
+}
+
 // ── Static routes (clean URLs) ────────────────────────────────────────────────
 $routes = [
-    '/'                        => '/index.php',
 
     '/dashboard'               => '/dashboard/index.php',
 
