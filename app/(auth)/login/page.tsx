@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter()
   const params = useSearchParams()
   const [login, setLogin] = useState('')
@@ -83,5 +83,13 @@ export default function LoginPage() {
         No account? <Link href="/register" className="text-accent hover:underline">Register →</Link>
       </p>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   )
 }
