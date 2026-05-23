@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <!-- Background -->
+  <rect width="32" height="32" rx="4" fill="#0a0a0c"/>
+  <!-- Subtle border -->
+  <rect width="32" height="32" rx="4" fill="none" stroke="#2c2c36" stroke-width="1"/>
+
+  <!-- H mark — vertical bars in ivory -->
+  <rect x="5" y="5" width="5.5" height="22" rx="0.5" fill="#e8e1cf"/>
+  <rect x="21.5" y="5" width="5.5" height="22" rx="0.5" fill="#e8e1cf"/>
+  <!-- H crossbar — signal teal -->
+  <rect x="5" y="13" width="22" height="6" rx="0.5" fill="#5ddbb8"/>
+
+  <!-- Terminal cursor dot — bottom right, teal -->
+  <rect x="25" y="26" width="3" height="3" fill="#5ddbb8" opacity="0.9"/>
+</svg>

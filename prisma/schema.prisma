@@ -1,0 +1,227 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  username      String    @unique
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role      @default(USER)
+  plan          Plan      @default(FREE)
+  planExpiresAt DateTime?
+  xp            Int       @default(0)
+  level         Int       @default(1)
+  streakDays    Int       @default(0)
+  longestStreak Int       @default(0)
+  lastActive    DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  scans         Scan[]
+  badges        UserBadge[]
+  notifications Notification[]
+  labAttempts   LabAttempt[]
+  quizAttempts  QuizAttempt[]
+  incidents     Incident[]
+  watchlist     Watchlist[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Scan {
+  id        String     @id @default(cuid())
+  userId    String
+  targetUrl String
+  profile   String     @default("quick")
+  modules   String[]
+  score     Int?
+  grade     String?
+  summary   String?
+  result    Json?
+  status    ScanStatus @default(PENDING)
+  jobId     String?
+  createdAt DateTime   @default(now())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum ScanStatus {
+  PENDING
+  RUNNING
+  DONE
+  ERROR
+}
+
+model Badge {
+  id             String      @id @default(cuid())
+  name           String
+  description    String
+  icon           String      @default("🏆")
+  conditionType  String
+  conditionValue Int
+  users          UserBadge[]
+}
+
+model UserBadge {
+  userId   String
+  badgeId  String
+  earnedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, badgeId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  message   String?
+  link      String   @default("")
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Lab {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  title       String
+  description String
+  difficulty  Difficulty
+  category    String
+  points      Int          @default(100)
+  isPro       Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  attempts    LabAttempt[]
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  EXPERT
+}
+
+model LabAttempt {
+  id        String    @id @default(cuid())
+  userId    String
+  labId     String
+  status    String    @default("started")
+  solvedAt  DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lab       Lab       @relation(fields: [labId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, labId])
+}
+
+model QuizCategory {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  title       String
+  description String?
+  domain      String?
+  questions   QuizQuestion[]
+  attempts    QuizAttempt[]
+}
+
+model QuizQuestion {
+  id          String       @id @default(cuid())
+  categoryId  String
+  question    String       @db.Text
+  options     String[]
+  answer      Int
+  explanation String?      @db.Text
+  difficulty  Difficulty   @default(MEDIUM)
+  category    QuizCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model QuizAttempt {
+  id         String       @id @default(cuid())
+  userId     String
+  categoryId String
+  score      Int
+  total      Int
+  createdAt  DateTime     @default(now())
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   QuizCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model Incident {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  description String   @db.Text
+  severity    String   @default("medium")
+  status      String   @default("open")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Watchlist {
+  id            String   @id @default(cuid())
+  userId        String
+  target        String
+  type          String   @default("domain")
+  alertsEnabled Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, target])
+}
