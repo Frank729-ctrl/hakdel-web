@@ -25,7 +25,7 @@ define('DB_HOST',   getenv('DB_HOST')   ?: 'localhost');
 define('DB_NAME',   getenv('DB_NAME')   ?: 'hakdel');
 define('DB_USER',   getenv('DB_USER')   ?: 'root');
 define('DB_PASS',   getenv('DB_PASS')   ?: '');
-define('DB_PORT',   (int)(getenv('DB_PORT')   ?: 3306));
+define('DB_PORT',   (int)(getenv('DB_PORT')   ?: 5432));
 
 define('API_BASE',  getenv('API_BASE')  ?: 'http://localhost:8000');   // FastAPI scanner
 define('SITE_URL',  getenv('SITE_URL')  ?: 'http://localhost:8080');   // PHP frontend
@@ -56,6 +56,44 @@ function db(): PDO {
 }
 
 // ─── Auth helpers ──────────────────────────────────────────────────────────
+// ─── Auth helpers ──────────────────────────────────────────────────────────
+class DbSessionHandler implements SessionHandlerInterface {
+    private PDO $pdo;
+    public function open($path, $name): bool {
+        $this->pdo = db();
+        $this->pdo->exec("CREATE TABLE IF NOT EXISTS php_sessions (
+            id VARCHAR(128) PRIMARY KEY,
+            data TEXT NOT NULL DEFAULT '',
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )");
+        return true;
+    }
+    public function close(): bool { return true; }
+    public function read($id): string|false {
+        $s = $this->pdo->prepare('SELECT data FROM php_sessions WHERE id = ?');
+        $s->execute([$id]);
+        return $s->fetchColumn() ?: '';
+    }
+    public function write($id, $data): bool {
+        $this->pdo->prepare(
+            'INSERT INTO php_sessions (id, data, updated_at) VALUES (?, ?, NOW())
+             ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()'
+        )->execute([$id, $data]);
+        return true;
+    }
+    public function destroy($id): bool {
+        $this->pdo->prepare('DELETE FROM php_sessions WHERE id = ?')->execute([$id]);
+        return true;
+    }
+    public function gc($max_lifetime): int|false {
+        $s = $this->pdo->prepare(
+            "DELETE FROM php_sessions WHERE updated_at < NOW() - INTERVAL '$max_lifetime seconds'"
+        );
+        $s->execute();
+        return $s->rowCount();
+    }
+}
+session_set_save_handler(new DbSessionHandler(), true);
 session_start();
 
 function current_user(): ?array {
